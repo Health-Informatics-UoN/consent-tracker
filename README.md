@@ -1,20 +1,48 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Introduction
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+This repository is for the NUH Consent app.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+This currently consists of a .NET web application backend that interacts with a PostgreSQL database.
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+## Getting Started
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+## Prerequisites
+
+1. **.NET SDK** `7.x`
+   - The backend API is .NET7
+1. Docker
+
+## Database setup
+
+The application stack interacts with a PostgreSQL Server database, and uses code-first migrations for managing the database schema.
+
+The repository contains a `docker-compose` for the database, so just run `docker-compose up -d` to start it running.
+
+When setting up a new environment, or running a newer version of the codebase if there have been schema changes, you need to run migrations against your database server.
+
+The easiest way is using the dotnet cli:
+
+1. If you haven't already, install the local Entity Framework tooling
+
+- Anywhere in the repo: `dotnet tool restore`
+
+1. Navigate to the same directory as `ConsentApp.csproj`
+1. Run migrations:
+
+- `dotnet ef database update`
+- The above runs against the default local server, using the connection string in `appsettings.Development.json`
+- You can specify a connection string with the `--connection "<connection string>"` option
+
+## 📁 Repository contents
+
+Areas within this repo include:
+
+- Application Source Code
+  - .NET7 backend API
+  - Shared Data class library
+
+## App Configuration
+
+Notes on configuration values that can be provided, and their defaults.
+
+The backend app can be configured in any standard way an ASP.NET Core application can. Typically from the Azure Portal (Environment variables) or an `appsettings.json`.

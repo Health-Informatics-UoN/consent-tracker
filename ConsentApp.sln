@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsentApp", "ConsentApp\ConsentApp.csproj", "{CB86EE6D-9D38-4E8B-88BB-09B887987798}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsentApp", "app\ConsentApp\ConsentApp.csproj", "{CB86EE6D-9D38-4E8B-88BB-09B887987798}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "app\Data\Data.csproj", "{F964185B-0381-4478-A01F-88814613028F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +14,9 @@ Global
 		{CB86EE6D-9D38-4E8B-88BB-09B887987798}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB86EE6D-9D38-4E8B-88BB-09B887987798}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB86EE6D-9D38-4E8B-88BB-09B887987798}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F964185B-0381-4478-A01F-88814613028F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F964185B-0381-4478-A01F-88814613028F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F964185B-0381-4478-A01F-88814613028F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F964185B-0381-4478-A01F-88814613028F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
