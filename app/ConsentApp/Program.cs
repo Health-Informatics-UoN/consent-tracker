@@ -1,4 +1,5 @@
 using ConsentApp.Data;
+using ConsentApp.Services;
 using Microsoft.EntityFrameworkCore;
 
 var b = WebApplication.CreateBuilder(args);
@@ -25,6 +26,8 @@ b.Services
             o.UseNpgsql(connectionString,
                 o => o.EnableRetryOnFailure());
     });
+
+b.Services.AddTransient<StudyService>();
 
 var app = b.Build();
 
