@@ -1,13 +1,23 @@
 using ConsentApp.Data;
 using ConsentApp.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var b = WebApplication.CreateBuilder(args);
 
 b.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 b.Services.AddEndpointsApiExplorer();
-b.Services.AddSwaggerGen();
+b.Services.AddSwaggerGen(c =>
+{
+    c.EnableAnnotations();
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "NUH Consent API",
+        Description = "API for the NUH Consent API"
+    });
+});
 
 // EF
 b.Services

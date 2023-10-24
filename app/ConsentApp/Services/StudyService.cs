@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using ConsentApp.Data;
 using ConsentApp.Data.Entities;
@@ -25,8 +26,10 @@ public class StudyService
             StudyId = x.StudyId,
             Patients = x.Patients.Select(y => new Models.Patient
             {
-                Id = y.Id,
-                IdType = y.IdType
+                PatientId = y.PatientId,
+                IdType = y.IdType,
+                Name = y.Name,
+                DoB = y.DoB
             }).ToList(),
         });
         return result;
@@ -41,7 +44,7 @@ public class StudyService
             throw new ArgumentException("Invalid study ID format.");
         }
 
-        var existingStudy = _db.Studies.FirstOrDefaultAsync(x => x.StudyId == studyId);
+        var existingStudy = await _db.Studies.FirstOrDefaultAsync(x => x.StudyId == studyId);
         
         if (existingStudy != null)
         {
@@ -53,7 +56,53 @@ public class StudyService
             StudyId = studyId
         };
         
-        await _db.Studies.AddAsync(entity);
+        _db.Studies.Add(entity);
         await _db.SaveChangesAsync();
+    }
+    
+    public async Task RegisterPatient(Models.RegisterPatient patient)
+    {
+        var idType = (nhsNumber: "NHS number", kNumber: "Knumber");
+        var patientId = patient.PatientId.Trim().Replace(" ", "");
+
+        // TODO: Add validation for Knumber when format has been confirmed
+        if (patientId.Length == 10 && long.TryParse(patientId, out _))
+        {
+            patient.IdType = idType.nhsNumber;
+        } else
+        {
+            throw new ArgumentException("Invalid patient ID format.");
+        }
+
+        var study = await _db.Studies.Include(x => x.Patients).FirstOrDefaultAsync(x => x.StudyId == patient.StudyId) ??
+                    throw new NullReferenceException($"No study with the study ID: \"{patient.StudyId}\" was found.");
+
+        var existingPatient = await _db.Patients.FirstOrDefaultAsync(x => x.PatientId.Trim().Replace(" ", "") == patientId);
+
+        if (existingPatient != null)
+        {
+            var registeredToStudy = study.Patients.Find(x => x.PatientId.Trim().Replace(" ", "") == existingPatient.PatientId);
+            if (registeredToStudy != null)
+            {
+                throw new InvalidOperationException("Patient already registered to the study");
+            }
+            study.Patients.Add(existingPatient);
+            await _db.SaveChangesAsync();
+        }
+        else
+        {
+            var entity = new Patient
+            {
+                PatientId = patientId,
+                IdType = patient.IdType,
+                Name = patient.Name,
+                DoB = DateTimeOffset.ParseExact(patient.DoB, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
+            };
+            
+            _db.Patients.Add(entity);
+            study.Patients.Add(entity);
+        
+            await _db.SaveChangesAsync();
+        }
     }
 }
