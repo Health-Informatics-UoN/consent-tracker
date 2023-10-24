@@ -35,6 +35,29 @@ public class StudyService
         return result;
     }
 
+    public async Task<IEnumerable<Models.PatientIds>> ListPatientIds(string studyId)
+    {
+        bool isStudyIdValid = Regex.IsMatch(studyId, @"^\d{2}[A-Z]{2}\d{3}$");
+        if (!isStudyIdValid)
+        {
+            throw new ArgumentException("Invalid study ID format.");
+        }
+        
+        var study = await _db.Studies
+            .Include(x => x.Patients)
+            .FirstOrDefaultAsync(x => x.StudyId == studyId);
+
+        if (study == null) throw new NullReferenceException($"No study with the study ID: \"{studyId}\" was found.");
+
+        var result = study.Patients.Select(y => new Models.PatientIds
+        {
+            PatientId = y.PatientId,
+            IdType = y.IdType
+        });
+
+        return result;
+    }
+
     public async Task Create(string studyId)
     {
         bool isStudyIdValid = Regex.IsMatch(studyId, @"^\d{2}[A-Z]{2}\d{3}$");

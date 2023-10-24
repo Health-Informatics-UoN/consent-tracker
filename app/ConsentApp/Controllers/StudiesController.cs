@@ -21,9 +21,29 @@ public class StudiesController: ControllerBase
     /// <returns>A list of studies.</returns>
     [HttpGet]
     [ProducesResponseType(typeof(List<Study>), StatusCodes.Status200OK)]
-    [HttpGet]
     public async Task<ActionResult<List<Study>>> Index() 
         => Ok(await _studyService.List());
+
+    /// <summary>
+    /// Retrieves a list of patient IDs associated with a specific study.
+    /// </summary>
+    /// <param name="studyId">The study ID of the study which patient Id information is to be retrieved from.</param>
+    /// <response code="200">Returns a list of patient IDs and ID type if the operation is successful.</response>
+    /// <response code="400">If the study ID is invalid or the study does not exist.</response>
+    [HttpGet("PatientIds/{studyId}")]
+    [ProducesResponseType(typeof(List<PatientIds>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<List<PatientIds>>> ListPatientIds(string studyId)
+    {
+        try
+        {
+            return Ok(await _studyService.ListPatientIds(studyId));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 
     /// <summary>
     /// Creates a new study with the specified study ID.
